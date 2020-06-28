@@ -1,4 +1,32 @@
-print("hello word")
+
+
+print("Welcome, my name is Elevator Sam, I m a pleasure to give you a good services")
+import time
+class TimerError(Exception):
+    """A custom exception used to report errors in use of Timer class"""
+
+class Timer:
+    def __init__(self):
+        self._start_time = None
+
+    def start(self):
+        """Start a new timer"""
+        if self._start_time is not None:
+            raise TimerError(f"Timer is running. Use .stop() to stop it")
+
+        self._start_time = time.perf_counter()
+
+    def stop(self):
+        """Stop the timer, and report the elapsed time"""
+        if self._start_time is None:
+            raise TimerError(f"Timer is not running. Use .start() to start it")
+
+        elapsed_time = time.perf_counter() - self._start_time
+        self._start_time = None
+        print(f"Elapsed time: {elapsed_time:0.4f} seconds")
+timing = Timer()
+
+# Class Elevators constructor       
 class Cage:
     def __init__(self,id, levelActual, direction):
         self.id = id
@@ -6,6 +34,8 @@ class Cage:
         self.column = 1
         self.statusDoor = "closed"
         self.position_door_x = 0 # close: 0 / open : 150
+        self._start_time = time.perf_counter()
+        self.timer = 0
         self.timing_door = 3000 
         self.timing_floor = 20000
         self.destination=[]
@@ -46,8 +76,7 @@ class Cage:
             #print("level actual is lower then the level call so we up on "+str(step)+' steps')
         else:
             print("level actual is the same then the call so we open the door for you you arrived")
-            print("The door is Open")
-            print("The door is closed")
+            open_close_door(self)
         print('listUp: '+ str(self.listUp))
         print('listDown: '+ str(self.listDown))
 
@@ -58,9 +87,15 @@ class Cage:
             print("level actual is: "+ str(self.levelActual))
             print("the direction in this cage is : " + self.direction)
             print("we go in the floor: " + str(list))
+            self.timer = 0
             while self.levelActual < list : 
+                #print("For each floor it took 5 seconds  to go up ")
+                while self.timer < 5:
+                    #print("For each floor it took " + str(self.timer) + " seconds  to go up ")
+                    self.timer += 1
+                    time.sleep(1)
                 self.levelActual +=1
-                print("level actual is: "+ str(self.levelActual))
+                print("Display actualy: "+ str(self.levelActual)+ " th floor")
             self.open_close_door()
         del self.listUp[:]        
         print("the listUp is empty now :"+ str(self.listUp))
@@ -72,9 +107,15 @@ class Cage:
             print("level actual is: "+ str(self.levelActual))
             print("the direction in this cage is : " + self.direction)
             print("we go in the floor: " + str(list))
-            while self.levelActual > list : 
+            self.timer = 0
+            while self.levelActual > list :
+                #print("For each floor it took 5 seconds  to go up ")
+                while self.timer < 5:
+                    #print("For each floor it took " + str(self.timer) + " seconds  to go up ")
+                    self.timer += 1
+                    time.sleep(1)
                 self.levelActual -=1
-                print("level actual is: "+ str(self.levelActual))
+                print("Display actualy: "+ str(self.levelActual)+ " th floor")
             self.open_close_door()
         del self.listDown[:]               
         self.direction = "idle"
@@ -84,10 +125,27 @@ class Cage:
          
     def open_close_door(self):
         print("we are arrived")
+        print("opening in 3 seconds")
         self.position_door_x = 150
-        print("The door is Open")
+        self.timer = 0
+        
+        while self.timer < 3:
+                #print("opening in 3" + str(self.timer) + " seconds")
+                self.position_door_x -= 50
+                print("position door: "+str(self.position_door_x))
+                self.timer += 1
+                time.sleep(1)
+        
+        print("The door is opened / position_door_x is at:"+str(self.position_door_x))
+        
         self.position_door_x = 0
-        print("The door is closed")
+        
+        while self.timer > 0:
+            self.position_door_x +=50
+            print("position door: "+str(self.position_door_x))
+            self.timer -= 1
+            time.sleep(1)
+        print("The door is closed / position_door_x is at:"+str(self.position_door_x))
 
 
 
