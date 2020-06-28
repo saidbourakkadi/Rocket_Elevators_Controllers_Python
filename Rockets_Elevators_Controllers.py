@@ -33,9 +33,9 @@ class Timer:
 class Cage:
     def __init__(self, id, levelActual, direction):
         self.id = id
-        self.battery = 1# sorry not used no time
-        self.column = 1# sorry not used no time
-        self.statusDoor = "closed"# sorry not used no time
+        self.battery = 1  # sorry not used no time
+        self.column = 1  # sorry not used no time
+        self.statusDoor = "closed"  # sorry not used no time
         self.position_door_x = 0  # close: 0 / open : 150
         self._start_time = time.perf_counter()
         self.timer = 0
@@ -48,9 +48,9 @@ class Cage:
         self.counterStepCage = 0
         self.direction = direction
         self.levelActual = levelActual
-        self.sensor_status_cage = "Clear"# sorry not used no time
-        self.close_button = "inactif"# sorry not used no time
-        self.open_button = "inactif"# sorry not used no time
+        self.sensor_status_cage = "Clear"  # sorry not used no time
+        self.close_button = "inactif"  # sorry not used no time
+        self.open_button = "inactif"  # sorry not used no time
 
     def display_status_cage(self):
         print('status_cage: ' + str(self.id) + ' , level Actual: ' +
@@ -151,7 +151,7 @@ class Cage:
             time.sleep(1)
         print("The door is closed / position_door_x is at:" +
               str(self.position_door_x))
-    
+
     def other_order_after_opening(self):
         dest = 1
         while dest != 0 and dest > 0 and dest <= 10:
@@ -159,9 +159,10 @@ class Cage:
                 input('Wait for the next order [1 to 10], if not press 0 for continue: '))
             self.call_level(destination)
             dest = destination
-    
-    def counter_step(self,levelAsk,directionAsk):
-        print("the compute start for the cage: "+str(self.id)+ " levelAsk is : "+str(levelAsk)+" direction ask is: "+str(directionAsk))
+
+    def counter_step(self, levelAsk, directionAsk):
+        print("the compute start for the cage: "+str(self.id) +
+              " levelAsk is : "+str(levelAsk)+" direction ask is: "+str(directionAsk))
         diff = self.levelActual - levelAsk
         sum = self.levelActual + levelAsk
         self.counterStepCage = 0
@@ -173,71 +174,101 @@ class Cage:
             if levelAsk >= self.levelActual:
                 self.counterStepCage = diff * (-1)
                 #print("levelAsk : " + levelAsk + " direction : " + directionAsk + " counterstep : " + counterStepCage)
-                print("counterstep de la cage:"+str(self.id)+" est "+ str(self.counterStepCage))
+                print("counterstep de la cage:"+str(self.id) +
+                      " est " + str(self.counterStepCage))
                 return self.counterStepCage
-            else: 
+            else:
                 self.counterStepCage = (20 - diff)
                 #print("levelAsk : " + levelAsk + " direction : " + directionAsk + " counterstep : " + counterStepCage)
-                print("counterstep de la cage:"+str(self.id)+" est "+ str(self.counterStepCage))
+                print("counterstep de la cage:"+str(self.id) +
+                      " est " + str(self.counterStepCage))
                 return self.counterStepCage
         elif directionAsk == "up" and self.direction == "down":
             self.counterStepCage = sum
             #print("levelAsk : " + levelAsk + " direction : " + directionAsk + " counterstep : " + counterStepCage)
-            print("counterstep de la cage:"+str(self.id)+" est "+ str(self.counterStepCage))
+            print("counterstep de la cage:"+str(self.id) +
+                  " est " + str(self.counterStepCage))
             return self.counterStepCage
         elif directionAsk == "down" and self.direction == "up":
             self.counterStepCage = (20 - sum)
             #print("levelAsk : " + levelAsk + " direction : " + directionAsk + " counterstep : " + counterStepCage)
-            print("counterstep de la cage:"+str(self.id)+" est "+ str(self.counterStepCage))
+            print("counterstep de la cage:"+str(self.id) +
+                  " est " + str(self.counterStepCage))
             return self.counterStepCage
         elif directionAsk == "down" and self.direction == "down":
             if levelAsk <= self.levelActual:
                 self.counterStepCage = diff
                 #print("levelAsk : " + levelAsk + " direction : " + directionAsk + " counterstep : " + counterStepCage)
-                print("counterstep de la cage:"+str(self.id)+" est "+ str(self.counterStepCage))
+                print("counterstep de la cage:"+str(self.id) +
+                      " est " + str(self.counterStepCage))
                 return self.counterStepCage
             else:
                 self.counterStepCage = sum
                 #print("levelAsk : " + levelAsk + " direction : " + directionAsk + " counterstep : " + counterStepCage)
-                print("counterstep de la cage:"+str(self.id)+" est "+ str(self.counterStepCage))
+                print("counterstep de la cage:"+str(self.id) +
+                      " est " + str(self.counterStepCage))
                 return self.counterStepCage
-            
-
-        
-        
 
 
+# function choice the cage with the shortest way
+def Choice_cage(levelAsk, directionAsk):
+    counterCage1 = cage1.counter_step(levelAsk, directionAsk)
+    counterCage2 = cage2.counter_step(levelAsk, directionAsk)
+    if counterCage1 <= counterCage2:
+        print("the Controller choice : cage1")
+        if directionAsk == "up" and levelAsk <= 10 and levelAsk >= 0:
+            cage1.listUp.append(levelAsk)
+        elif directionAsk == "dwon" and levelAsk <= 10 and levelAsk >= 0:
+            cage1.listDown.append(levelAsk)
+    else:
+        print("the Controller choice : cage2")
+        if directionAsk == "up" and levelAsk <= 10 and levelAsk >= 0:
+            cage2.listUp.append(levelAsk)
+        elif directionAsk == "dwon" and levelAsk <= 10 and levelAsk >= 0:
+            cage2.listDown.append(levelAsk)
 
-# instance my object cag1 with this://def __init__(self,id, levelActual, direction)://
+
+# batterie
+# Please give the instance to my object cage and cage2
+# with this://def __init__(self,id, levelActual, direction):
+# After that follow the instructions bellow
 cage1 = Cage(1, 5, "up")
 cage2 = Cage(2, 1, "up")
 
 # display  status cage:id
 cage1.display_status_cage()
 cage2.display_status_cage()
+# Manage the callAsk buttons
 
-cage1.counter_step(7,"up")
-cage2.counter_step(7,"up")
-print(cage1.counterStepCage)
-print(cage2.counterStepCage)
+ask = 1
+while ask != 0 and ask >= 0 and ask <= 10:
+    ask = int(
+        input('Enter level Ask number [0,10] ? if you finished enter 0 to execute: '))
+    destination = input(
+        'Enter your destination if you finished enter 11 to execute: ')
+    Choice_cage(ask, destination)
 
+    print("cage1 listUp: "+str(cage1.listUp))
+    print("cage1 lisDown: "+str(cage1.listDown))
+    print("cage2 listUp: "+str(cage2.listUp))
+    print("cage2 listUp: "+str(cage2.listDown))
 # variables
-id = 0
+id = 1
 
 # choice your cage
 while id != 1 and id != 2:
     id = int(input('Enter cage number [1,2] ? : '))
     print("you are in the cage number: "+str(id))
 
+
 # function call inside
 # the first call is decided for the first direction cage
 dest = 1
 if id == 1:
-    while dest != 0 and dest > 0 and dest <= 10:
-        destination = int(
+    while dest > 0 and dest <= 10:
+        dest = int(
             input('Enter your destination [1 to 10] ? if you finished enter 0: '))
-        cage1.call_level(destination)
-        dest = destination
+        cage1.call_level(dest)
     cage1.move_up()
     cage1.move_down()
 
@@ -249,6 +280,3 @@ if id == 2:
         cage2.call_level(dest)
     cage2.move_up()
     cage2.move_down()
-
-
-
